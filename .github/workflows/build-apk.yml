@@ -18,6 +18,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
+      - name: Apply Pulse Atlas UI upgrade
+        run: python scripts/apply_pulse_atlas_v102.py
+
       - name: Set up Java 17
         uses: actions/setup-java@v5
         with:
@@ -39,13 +42,13 @@ jobs:
         run: gradle assembleDebug
 
       - name: Prepare phone-friendly APK
-        run: cp app/build/outputs/apk/debug/app-debug.apk Currant-Black-Atlas.apk
+        run: cp app/build/outputs/apk/debug/app-debug.apk Pulse-Atlas-v1.0.2.apk
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v7
         with:
-          name: Currant-Black-Atlas-APK
-          path: Currant-Black-Atlas.apk
+          name: Pulse-Atlas-v1.0.2-APK
+          path: Pulse-Atlas-v1.0.2.apk
           if-no-files-found: error
 
       - name: Publish APK to Releases
@@ -53,10 +56,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view latest-debug >/dev/null 2>&1; then
-            gh release upload latest-debug Currant-Black-Atlas.apk --clobber
+            gh release upload latest-debug Pulse-Atlas-v1.0.2.apk --clobber
+            gh release edit latest-debug \
+              --title "Pulse Atlas — Atlas Noir Edition v1.0.2" \
+              --notes "Pulse Atlas v1.0.2 introduces Lux, animated ambient signals, a collapsible atlas menu, Nzo’s Fieldbook naming, and a corrected Android themed icon."
           else
-            gh release create latest-debug Currant-Black-Atlas.apk \
-              --title "Currant [Black] Atlas — Latest APK" \
-              --notes "Latest installable debug build of the Currant [Black] Atlas Android app." \
+            gh release create latest-debug Pulse-Atlas-v1.0.2.apk \
+              --title "Pulse Atlas — Atlas Noir Edition v1.0.2" \
+              --notes "Pulse Atlas v1.0.2 introduces Lux, animated ambient signals, a collapsible atlas menu, Nzo’s Fieldbook naming, and a corrected Android themed icon." \
               --prerelease
           fi
