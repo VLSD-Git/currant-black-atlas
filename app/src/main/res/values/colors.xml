@@ -1,0 +1,10 @@
+<resources>
+    <color name="currant_black">#030104</color>
+    <color name="currant_panel">#100713</color>
+    <color name="currant">#701637</color>
+    <color name="currant_bright">#BD2B63</color>
+    <color name="plum">#3B124D</color>
+    <color name="violet">#A84BFF</color>
+    <color name="ember">#FF6F61</color>
+    <color name="white">#F7EEF9</color>
+</resources>
