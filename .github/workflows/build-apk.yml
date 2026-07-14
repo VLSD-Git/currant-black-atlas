@@ -8,7 +8,7 @@ on:
       - master
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -38,9 +38,25 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug
 
-      - name: Upload APK
+      - name: Prepare phone-friendly APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Currant-Black-Atlas.apk
+
+      - name: Upload workflow artifact
         uses: actions/upload-artifact@v7
         with:
           name: Currant-Black-Atlas-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: Currant-Black-Atlas.apk
           if-no-files-found: error
+
+      - name: Publish APK to Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view latest-debug >/dev/null 2>&1; then
+            gh release upload latest-debug Currant-Black-Atlas.apk --clobber
+          else
+            gh release create latest-debug Currant-Black-Atlas.apk \
+              --title "Currant [Black] Atlas — Latest APK" \
+              --notes "Latest installable debug build of the Currant [Black] Atlas Android app." \
+              --prerelease
+          fi
